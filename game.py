@@ -3,10 +3,9 @@ def two_player(game,turn,w_move,error,start = False):
     if start:
         print("Player 1 is 'X' and Player 2 is 'O'\nTo make a move enter row and column number")
         print("First Input row then input column seperated with a column\n")
-        print_board(game)
     else:
         os.system('cls')
-        print_board(game)
+    print_board(game)
     if w_move:
         print("That place already taken, Choose anothe place\n")
     if error:
