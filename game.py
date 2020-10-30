@@ -1,39 +1,30 @@
 import os
-def two_player(game,turn,w_move,error,start = False):
-    if start:
-        print("Player 1 is 'X' and Player 2 is 'O'\nTo make a move enter row and column number")
-        print("First Input row then input column seperated with a column\n")
-    else:
-        os.system('cls')
-    print_board(game)
-    if w_move:
-        print("That place already taken, Choose anothe place\n")
-    if error:
-        print(" Wrong Input Enter Again")
-    if turn:
-        step = input("Player 1 =>")
-    else:
-        step = input("Player 2 =>")
-    row,column = map(int,step.split(" "))
-    if row in [0,1,2] and column  in [0,1,2]:
-        if game[row][column] != 0:
-            os.system('cls')
-            print_board(game)
-            two_player(game,turn,1,False)
-        else:
-            os.system('cls')
-            if turn:game[row][column]=1
-            else:game[row][column]=-1
-            if check_win(game):
-                print_board(game)
-                if turn:
-                    print("player 1 Won!")
-                else:
-                    print("Player 2 won!")
+from random import randint
+
+def print_board(board):
+    print("    0   1   2\n")
+    for count, row in enumerate(board):
+        print(count,end="  ")
+        for i in range(len(row)):
+            if row[i]==1:
+                print(f" X ",end="")
+            elif row[i]==-1:
+                print(f" O ",end="")
             else:
-                two_player(game,not turn,0,False)
-    else:
-        two_player(game,turn,0,True)
+                print(f"   ",end="")
+            if i!=2:
+                print("|",end="")
+            else:
+                print("")
+        if count!=2:
+            print("   -----------")
+    print("")
+
+def check_tie(game):
+    for row in game:
+        if 0 in row:
+            return False
+    return True
 
 def check_win(game):
     win = False
@@ -57,26 +48,197 @@ def check_win(game):
         win = True
     return win
 
-def print_board(board):
-    print("    0   1   2\n")
-    for count, row in enumerate(board):
-        print(count,end="  ")
-        for i in range(len(row)):
-            if row[i]==1:
-                print(f" X ",end="")
-            elif row[i]==-1:
-                print(f" O ",end="")
+def computer_game(game,turn):
+    # Checking diagonals
+    if sum([game[0][0],game[1][1],game[2][2]]) == 2 or sum([game[0][0],game[1][1],game[2][2]]) == -2:
+        for i in range(len(game)):
+            if game[i][i] == 0:
+                if turn:game[i][i]=1
+                else : game[i][i]=-1
+                return game
+    elif sum([game[0][2],game[1][1],game[2][0]]) == 2 or sum([game[0][2],game[1][1],game[2][0]]) == -2:
+        j=2
+        for i in range(len(game)):
+            if game[i][j] == 0:
+                if turn:game[i][j]=1
+                else : game[i][j]=-1
+                return game
+            j-=1
+    # checking rows
+    if turn:
+        a=[sum(game[0]),sum(game[1]),sum(game[2])]
+        if 2 in a:
+            j=a.index(2)
+            for i in range(3):
+                if game[j][i]==0:
+                    game[j][i]=-1
+                    return game
+        elif -2 in a:
+            j=a.index(-2)
+            for i in range(3):
+                if game[j][i]==0:
+                    game[j][i]=1
+                    return game
+    else:
+        a=[sum(game[0]),sum(game[1]),sum(game[2])]
+        if -2 in a:
+            j=a.index(-2)
+            for i in range(3):
+                if game[j][i]==0:
+                    game[j][i]=1
+                    return game
+        elif 2 in a:
+            print("yes")
+            j=a.index(2)
+            for i in range(3):
+                if game[j][i]==0:
+                    game[j][i]=-1
+                    return game
+    # Checking columns
+    l=[0,0,0]
+    for row in game:
+        for i in range(3):
+                if row[i]!=0:
+                    l[i]+=row[i]
+    if turn:
+        if 2 in l:
+            for i in range(3):
+                if l[i] == 2 :
+                    for row in game:
+                        if row[i] == 0:
+                            row[i]=1
+                            return game
+        elif -2 in l:
+            for i in range(3):
+                if l[i]==-2:
+                    for row in game:
+                        if row[i] == 0:
+                            row[i]=1
+                            return game
+    else:
+        if -2 in l:
+            for i in range(3):
+                if l[i] == -2 :
+                    for row in game:
+                        if row[i] == 0:
+                            row[i]=-1
+                            return game
+        elif 2 in l:
+            for i in range(3):
+                if l[i]==2:
+                    for row in game:
+                        if row[i] == 0:
+                            row[i]=-1
+                            return game
+    try:
+        if 1 not in l or -1 not in l or 2 not in l or -2 not in l:
+            if game[1][1]==0:
+                if turn:game[1][1]=1
+                else:game[1][1]=-1
             else:
-                print(f"   ",end="")
-            if i!=2:
-                print("|",end="")
+                p=[[0,0],[1,1],[2,2],[2,0],[0,2]]
+                while True:
+                    a=randint(0,len(p)-1)
+                    i,j=p[a]
+                    if game[i][j]==0:
+                        if turn:
+                            game[i][j]=1
+                        else:
+                            game[i][j]=-1  
+                        break
+                    else:
+                        p.pop(a)
+        else:
+            p=[[0,0],[1,1],[2,2],[2,0],[0,2]]
+            while True:
+                a=randint(0,len(p)-1)
+                i,j=p[a]
+                if game[i][j]==0:
+                    if turn:
+                        game[i][j]=1
+                    else:
+                        game[i][j]=-1  
+                    break
+                else:
+                    p.pop(a)               
+        return game
+    except:
+        for row in game:
+            for i in row:
+                if row[i]==0:
+                    if turn : row[i]=1
+                    else: row[i]=-1
+                    return game
+
+def two_player(game,turn,w_move,error,player,start = False):
+    if start:
+        print("Player 1 is 'X' and Player 2 is 'O'\nTo make a move enter row and column number")
+        print("First Input row then input column seperated with a column\n")
+    else:
+        os.system('cls')
+    print_board(game)
+    if w_move:
+        print("That place already taken, Choose anothe place\n")
+    if error:
+        print(" Wrong Input Enter Again")
+    if player:
+        if turn:
+            step = input("Player 1 =>")
+        else:
+            step = input("Player 2 =>")
+    else:
+        if turn:
+            step = input("Player's Turn =>")
+        else:
+            game = computer_game(game,turn)
+            if check_win(game):
+                os.system('cls')
+                print_board(game)
+                if turn:
+                    print("player 1 Won!")
+                else:
+                    print("CPU won!")
             else:
-                print("")
-        if count!=2:
-            print("   -----------")
-    print("")
+                if not check_tie(game):
+                    two_player(game,not turn,0,False,player)
+                else:
+                    os.system('cls')
+                    print_board(game)
+                    print("It's a Tie")
+    if not(not player and not turn):
+        try:
+            row,column = map(int,step.split(" "))
+        except:
+            two_player(game,turn,0,True,player)
+        if row in [0,1,2] and column  in [0,1,2]:
+            if game[row][column] != 0:
+                os.system('cls')
+                print_board(game)
+                two_player(game,turn,1,False,player)
+            else:
+                os.system('cls')
+                if turn:game[row][column]=1
+                else:game[row][column]=-1
+                if check_win(game):
+                    print_board(game)
+                    if turn:
+                        print("player 1 Won!")
+                    else:
+                        print("Player 2 won!")
+                else:
+                    if not check_tie(game):
+                        two_player(game,not turn,0,False,player)
+                    else:
+                        print_board(game)
+                        print("It's a Tie")
+        else:
+            two_player(game,turn,0,True,player)
 
 game = [[ 0, 0, 0 ],
         [ 0, 0, 0 ],
-        [ 0, 0, 0 ],]
-two_player(game,True,0,False,True)
+        [ 0, 0, 0 ]]
+player = int(input("Choose one of the following:\n1.P v P\n2.CPU vs P\n=> "))
+if player == 1:
+    two_player(game,True,0,False,True,True)
+else:
+    two_player(game,randint(0,1),0,False,False,True)
