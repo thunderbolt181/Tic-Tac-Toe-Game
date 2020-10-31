@@ -130,6 +130,26 @@ def computer_game(game,turn):
                             row[i]=-1
                             return game
 
+    if sum([sum(game[0]),sum(game[1]),sum(game[2])]) ==1:
+        if (game[0][1] == 1 and game[1][2] == 1) or (game[1][0] == 1 and game[2][1] == 1 ):
+            a=randint(0,1)
+            if a:game[0][0]=-1
+            else:game[2][2]=-1
+            return game
+        elif (game[0][1] == 1 and game[1][0] == 1) or (game[1][2] == 1 and game[2][1] == 1 ):
+            a=randint(0,1)
+            if a:game[2][0]=-1
+            else:game[0][2]=-1
+            return game
+    
+    if game[1][1]==-1:
+        if (game[0][0]==1 and game[2][2]==1) or (game[2][0]==1 and game[0][2]==1):
+            p=[[1,0],[1,2],[2,1],[0,1]]
+            a=randint(0,4)
+            i,j=p[a]
+            game[i][j]=-1
+            return game
+
     if game[0][0]==0 or game[1][1]==0 or game[2][2]==0 or game[2][0]==0 or game[0][2]==0:
         if sum([sum(game[0]),sum(game[1]),sum(game[2])]) != 0 and game[1][1] == 0:
             if turn:game[1][1]=1
@@ -154,7 +174,6 @@ def computer_game(game,turn):
                     if turn : row[i]=1
                     else: row[i]=-1
     return game
-        
 
 def two_player(game,turn,w_move,error,player,start = False):
     if start:
@@ -234,8 +253,13 @@ def two_player(game,turn,w_move,error,player,start = False):
 game = [[ 0, 0, 0 ],
         [ 0, 0, 0 ],
         [ 0, 0, 0 ]]
-player = int(input("Choose one of the following:\n1.P v P\n2.CPU vs P\n=> "))
-if player == 1:
-    two_player(game,True,0,False,True,True)
-else:
-    two_player(game,randint(0,1),0,False,False,True)
+while True:
+    player = int(input("Choose one of the following:\n1.P v P\n2.CPU vs P\n=> "))
+    if player == 1:
+        two_player(game,True,0,False,True,True)
+        break
+    elif player == 2:
+        two_player(game,randint(0,1),0,False,False,True)
+        break
+    else:
+        print("Wrong input! Enter Again")
