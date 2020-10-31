@@ -31,7 +31,7 @@ def check_win(game):
     if game[1][1] !=0:
         if game[0][0]==game[1][1] and game[1][1]==game[2][2]:
             win = True
-        elif game[0][2]==game[1][1] and game[11]==game[2][0]:
+        elif game[0][2]==game[1][1] and game[1][1]==game[2][0]:
             win = True
         if win:
             return win
@@ -88,7 +88,6 @@ def computer_game(game,turn):
                     game[j][i]=1
                     return game
         elif 2 in a:
-            print("yes")
             j=a.index(2)
             for i in range(3):
                 if game[j][i]==0:
@@ -130,24 +129,11 @@ def computer_game(game,turn):
                         if row[i] == 0:
                             row[i]=-1
                             return game
-    try:
-        if 1 not in l or -1 not in l or 2 not in l or -2 not in l:
-            if game[1][1]==0:
-                if turn:game[1][1]=1
-                else:game[1][1]=-1
-            else:
-                p=[[0,0],[1,1],[2,2],[2,0],[0,2]]
-                while True:
-                    a=randint(0,len(p)-1)
-                    i,j=p[a]
-                    if game[i][j]==0:
-                        if turn:
-                            game[i][j]=1
-                        else:
-                            game[i][j]=-1  
-                        break
-                    else:
-                        p.pop(a)
+
+    if game[0][0]==0 or game[1][1]==0 or game[2][2]==0 or game[2][0]==0 or game[0][2]==0:
+        if sum([sum(game[0]),sum(game[1]),sum(game[2])]) != 0 and game[1][1] == 0:
+            if turn:game[1][1]=1
+            else:game[1][1]=-1
         else:
             p=[[0,0],[1,1],[2,2],[2,0],[0,2]]
             while True:
@@ -160,15 +146,15 @@ def computer_game(game,turn):
                         game[i][j]=-1  
                     break
                 else:
-                    p.pop(a)               
-        return game
-    except:
+                    p.pop(a)
+    else:
         for row in game:
             for i in row:
                 if row[i]==0:
                     if turn : row[i]=1
                     else: row[i]=-1
-                    return game
+    return game
+        
 
 def two_player(game,turn,w_move,error,player,start = False):
     if start:
@@ -196,25 +182,31 @@ def two_player(game,turn,w_move,error,player,start = False):
                 print_board(game)
                 if turn:
                     print("player 1 Won!")
+                    return 0
                 else:
                     print("CPU won!")
+                    return 0
             else:
                 if not check_tie(game):
                     two_player(game,not turn,0,False,player)
+                    return 0
                 else:
                     os.system('cls')
                     print_board(game)
                     print("It's a Tie")
+                    return 0
     if not(not player and not turn):
         try:
             row,column = map(int,step.split(" "))
         except:
             two_player(game,turn,0,True,player)
+            return 0
         if row in [0,1,2] and column  in [0,1,2]:
-            if game[row][column] != 0:
+            if game[row][column] != 0 :
                 os.system('cls')
                 print_board(game)
                 two_player(game,turn,1,False,player)
+                return 0
             else:
                 os.system('cls')
                 if turn:game[row][column]=1
@@ -223,16 +215,21 @@ def two_player(game,turn,w_move,error,player,start = False):
                     print_board(game)
                     if turn:
                         print("player 1 Won!")
+                        return 0
                     else:
                         print("Player 2 won!")
+                        return 0
                 else:
                     if not check_tie(game):
                         two_player(game,not turn,0,False,player)
+                        return 0
                     else:
                         print_board(game)
                         print("It's a Tie")
+                        return 0
         else:
             two_player(game,turn,0,True,player)
+            return 0
 
 game = [[ 0, 0, 0 ],
         [ 0, 0, 0 ],
