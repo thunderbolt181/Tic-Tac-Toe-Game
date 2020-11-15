@@ -1,5 +1,6 @@
 import os
 from random import randint
+import numpy as np
 
 def print_board(board):
     print("    0   1   2\n")
@@ -250,9 +251,7 @@ def two_player(game,turn,w_move,error,player,start = False):
             two_player(game,turn,0,True,player)
             return 0
 
-game = [[ 0, 0, 0 ],
-        [ 0, 0, 0 ],
-        [ 0, 0, 0 ]]
+game = np.zeros((3,3))
 while True:
     player = int(input("Choose one of the following:\n1.P v P\n2.CPU vs P\n=> "))
     if player == 1:
