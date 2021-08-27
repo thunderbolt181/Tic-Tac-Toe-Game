@@ -250,16 +250,17 @@ def two_player(game,turn,w_move,error,player,start = False):
             two_player(game,turn,0,True,player)
             return 0
 
-game = [[ 0, 0, 0 ],
-        [ 0, 0, 0 ],
-        [ 0, 0, 0 ]]
-while True:
-    player = int(input("Choose one of the following:\n1.P v P\n2.CPU vs P\n=> "))
-    if player == 1:
-        two_player(game,True,0,False,True,True)
-        break
-    elif player == 2:
-        two_player(game,randint(0,1),0,False,False,True)
-        break
-    else:
-        print("Wrong input! Enter Again")
+if __name__=="__main__":
+    game = [[ 0, 0, 0 ],
+            [ 0, 0, 0 ],
+            [ 0, 0, 0 ]]
+    while True:
+        player = int(input("Choose one of the following:\n1.P v P\n2.CPU vs P\n=> "))
+        if player == 1:
+            two_player(game,True,0,False,True,True)
+            break
+        elif player == 2:
+            two_player(game,randint(0,1),0,False,False,True)
+            break
+        else:
+            print("Wrong input! Enter Again")
