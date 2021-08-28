@@ -182,6 +182,7 @@ def two_player(game,turn,w_move,error,player,start = False):
     else:
         os.system('cls')
     print_board(game)
+    print(game)
     if w_move:
         print("That place already taken, Choose anothe place\n")
     if error:
