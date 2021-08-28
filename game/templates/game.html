@@ -10,42 +10,55 @@
 <body class="bg-gray-900">
     <div class="flex justify-around">
         <div class="grid grid-cols-3 p-2 gap-4 text-center text-gray-100 ">
-            <button value="1" id="00" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
-            <button value="-1" id="01" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
-            <button value="0" id="02" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
-            <button value="-1" id="10" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
-            <button value="1" id="11" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
-            <button value="0" id="12" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
-            <button value="0" id="20" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
-            <button value="1" id="21" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
-            <button value="-1" id="22" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
+            <button onclick="load(this.value)" value="1" id="00" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
+            <button onclick="load(this.value)" value="-1" id="01" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
+            <button onclick="load(this.value)" value="0" id="02" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
+            <button onclick="load(this.value)" value="-1" id="10" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
+            <button onclick="load(this.value)" value="1" id="11" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
+            <button onclick="load(this.value)" value="0" id="12" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
+            <button onclick="load(this.value)" value="0" id="20" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
+            <button onclick="load(this.value)" value="1" id="21" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
+            <button onclick="load(this.value)" value="-1" id="22" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
         </div>
     </div>
     <script>
-        for(var i=0;i<3;i++){
-            let a=[];
-            for(var j=0;j<3;j++){
-                var val = Number(document.getElementById(`${i}${j}`).getAttribute('value'));
-                if (val===1){
-                    document.getElementById(`${i}${j}`).innerHTML=`<img height='90' width="90" src="https://img.icons8.com/dusk/64/000000/x.png"/>`
-                }else if(val==-1){
-                    document.getElementById(`${i}${j}`).innerHTML=`<img height='90' width="90" src="https://img.icons8.com/dusk/64/000000/o.png"/>`
-                }else if(val==0){
-                    document.getElementById(`${i}${j}`).innerHTML=``
+        function load(e){
+            var game={};
+            load_board();
+            game=game_board();
+        }
+
+        function load_board(){
+            for(var i=0;i<3;i++){
+                let a=[];
+                for(var j=0;j<3;j++){
+                    var val = Number(document.getElementById(`${i}${j}`).getAttribute('value'));
+                    if (val===1){
+                        document.getElementById(`${i}${j}`).innerHTML=`<img height='90' width="90" src="https://img.icons8.com/dusk/64/000000/x.png"/>`
+                    }else if(val==-1){
+                        document.getElementById(`${i}${j}`).innerHTML=`<img height='90' width="90" src="https://img.icons8.com/dusk/64/000000/o.png"/>`
+                    }else if(val==0){
+                        document.getElementById(`${i}${j}`).innerHTML=``
+                    }
                 }
             }
         }
-    </script>
-    <script>
-        var game=[];
-        for(var i=0;i<3;i++){
-            let a=[];
-            for(var j=0;j<3;j++){
-                a.push(Number(document.getElementById(`${i}${j}`).getAttribute('value')));
+        
+        function game_board(){
+            var game=[];
+            for(var i=0;i<3;i++){
+                let a=[];
+                for(var j=0;j<3;j++){
+                    a.push(Number(document.getElementById(`${i}${j}`).getAttribute('value')));
+                }
+                game.push(a);
             }
-            game.push(a);
+            return game
         }
-        console.log(game);
+
+        window.onload = function() {
+            load();
+        };
     </script>
 </body><img src="https://img.icons8.com/dusk/64/000000/o.png"/><img src="https://img.icons8.com/dusk/64/000000/x.png"/>
 </html>
