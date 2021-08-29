@@ -10,22 +10,55 @@
 <body class="bg-gray-900">
     <div class="flex justify-around">
         <div class="grid grid-cols-3 p-2 gap-4 text-center text-gray-100 ">
-            <button onclick="load(this.value)" value="1" id="00" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
-            <button onclick="load(this.value)" value="-1" id="01" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
-            <button onclick="load(this.value)" value="0" id="02" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
-            <button onclick="load(this.value)" value="-1" id="10" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
-            <button onclick="load(this.value)" value="1" id="11" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
-            <button onclick="load(this.value)" value="0" id="12" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
-            <button onclick="load(this.value)" value="0" id="20" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
-            <button onclick="load(this.value)" value="1" id="21" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
-            <button onclick="load(this.value)" value="-1" id="22" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
+            <button onclick="load(this)" value="0" id="00" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
+            <button onclick="load(this)" value="0" id="01" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
+            <button onclick="load(this)" value="0" id="02" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
+            <button onclick="load(this)" value="0" id="10" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
+            <button onclick="load(this)" value="0" id="11" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
+            <button onclick="load(this)" value="0" id="12" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
+            <button onclick="load(this)" value="0" id="20" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
+            <button onclick="load(this)" value="0" id="21" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
+            <button onclick="load(this)" value="0" id="22" style="height: 110px;width: 110px;" class="rounded p-2 w-full bg-green-900"></button>
         </div>
     </div>
     <script>
+        var game = {};
+
         function load(e){
-            var game={};
-            load_board();
-            game=game_board();
+            if (e != undefined){
+                if (e.value==1 | e.value==-1){
+                    alert("This Place is Already Taken");
+                }else{
+                    e.setAttribute('value','1');
+                    var game={};
+                    load_board();
+                    game=game_board();
+                    move(game);
+                }
+            }
+        }
+
+        function move(game){
+            fetch('http://localhost:8000/api/game/',{
+                method:"POST"
+            ,
+                headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            },
+                body:JSON.stringify(game),
+            })
+            .then(response => response.json())
+            .then(data => {
+                var c_game=data['request'];
+                for (var i=0;i<3;i++){
+                    for(var j=0;j<3;j++){
+                        document.getElementById(`${i}${j}`).setAttribute('value',c_game[i][j])
+                    }
+                }
+                console.log(c_game)
+                load_board()
+            })
+            .catch(err => console.log(err));
         }
 
         function load_board(){
@@ -35,9 +68,9 @@
                     var val = Number(document.getElementById(`${i}${j}`).getAttribute('value'));
                     if (val===1){
                         document.getElementById(`${i}${j}`).innerHTML=`<img height='90' width="90" src="https://img.icons8.com/dusk/64/000000/x.png"/>`
-                    }else if(val==-1){
+                    }else if(val===-1){
                         document.getElementById(`${i}${j}`).innerHTML=`<img height='90' width="90" src="https://img.icons8.com/dusk/64/000000/o.png"/>`
-                    }else if(val==0){
+                    }else if(val===0){
                         document.getElementById(`${i}${j}`).innerHTML=``
                     }
                 }
@@ -55,10 +88,9 @@
             }
             return game
         }
-
         window.onload = function() {
-            load();
+            load_board();
         };
     </script>
-</body><img src="https://img.icons8.com/dusk/64/000000/o.png"/><img src="https://img.icons8.com/dusk/64/000000/x.png"/>
+</body>
 </html>
