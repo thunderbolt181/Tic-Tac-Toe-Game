@@ -55,10 +55,21 @@
                         document.getElementById(`${i}${j}`).setAttribute('value',c_game[i][j])
                     }
                 }
-                console.log(c_game)
+                console.log(data['request'])
                 load_board()
+                if (data['win']!==null){
+                    win(data['win'])
+                }
             })
             .catch(err => console.log(err));
+        }
+
+        function win(win){
+            if (win){
+                alert("player won");
+            }else{
+                console.log(alert("Computer won"))
+            }
         }
 
         function load_board(){

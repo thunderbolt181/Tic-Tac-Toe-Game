@@ -16,16 +16,13 @@ class play_game(viewsets.ViewSet):
         return Response({"Hello":'hello'})
 
     def create(self,request,*args,**kwargs):
-        print(request.data)
-        p_game=request.data
         game=TicTakToe.board()
-        board = game.computer_game(p_game,False)
-        print(board)
-        return Response({"request":board})
-        # for i in range(3):
-        #     for j in range(3):
-        #         print(p_game[i][j],board[i][j])
-        #         if p_game[i][j] != board[i][j]:
-        #             return Response({"request":f"{i}{j}"})
-        # else:
-        #     return Response({"request":"No turn"})
+        win=game.check_win(request.data)
+        if win:
+            return Response({"request":request.data,"win":True})
+        board = game.computer_game(request.data,False)
+        win=game.check_win(request.data)
+        if win:
+            return Response({"request":board,"win":False})
+        else:
+            return Response({"request":board,"win":None})
