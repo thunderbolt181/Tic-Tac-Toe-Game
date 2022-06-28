@@ -1,266 +1,171 @@
 import os
 from random import randint
 
-def print_board(board) -> None:
-    print("    0   1   2\n")
-    for count, row in enumerate(board):
-        print(count,end="  ")
-        for i in range(len(row)):
-            if row[i]==1:
-                print(f" X ",end="")
-            elif row[i]==-1:
-                print(f" O ",end="")
-            else:
-                print(f"   ",end="")
-            if i!=2:
-                print("|",end="")
-            else:
-                print("")
-        if count!=2:
-            print("   -----------")
-    print("")
+class tictaktoe:
+    def __init__(self,game):
+        self.game = game
 
-def check_tie(game) -> bool:
-    for row in game:
-        if 0 in row:
-            return False
-    return True
+    def pvp(self,player,row,column):
+        if player: # Player 1 i.e. "X"
+            if self.check_pos(row, column):
+                self.game[row][column]=1
+                output=["",True,not player]
+            else:output=["Position already occupied.",True,player]
+        else: # Player 2 i.e. "O"
+            if self.check_pos(row, column):
+                self.game[row][column]=-1
+                output=["",True,not player]
+            else:output=["Position already occupied.",True,player]
+        if self.check_tie():
+            output=["It's Tie",False,player]
+        if self.check_win():
+            if player:output=["'X' Won!",False,player]
+            else: output=["'O' Won!",False,player]
+        return output
 
-def check_win(game) -> bool:
-    win = False
-    if game[1][1] !=0:
-        if game[0][0]==game[1][1] and game[1][1]==game[2][2]:
-            win = True
-        elif game[0][2]==game[1][1] and game[1][1]==game[2][0]:
-            win = True
-        if win:
-            return win
-    l=[0,0,0]
-    for row in game:
-        if (1 not in row or -1 not in row) and 0 not in row:
-            win = True
-            return win
-        else:
-            for i in range(3):
-                if row[i]!=0:
-                    l[i]+=row[i]
-    if -3 in l or 3 in l:
-        win = True
-    return win
-
-def computer_game(game,turn) -> list:
-    # Checking diagonals
-    if sum([game[0][0],game[1][1],game[2][2]]) == 2 or sum([game[0][0],game[1][1],game[2][2]]) == -2:
-        for i in range(len(game)):
-            if game[i][i] == 0:
-                if turn:game[i][i]=1
-                else : game[i][i]=-1
-                return game
-    elif sum([game[0][2],game[1][1],game[2][0]]) == 2 or sum([game[0][2],game[1][1],game[2][0]]) == -2:
-        j=2
-        for i in range(len(game)):
-            if game[i][j] == 0:
-                if turn:game[i][j]=1
-                else : game[i][j]=-1
-                return game
-            j-=1
-    # checking rows
-    if turn:
-        a=[sum(game[0]),sum(game[1]),sum(game[2])]
-        if 2 in a:
-            j=a.index(2)
-            for i in range(3):
-                if game[j][i]==0:
-                    game[j][i]=-1
-                    return game
-        elif -2 in a:
-            j=a.index(-2)
-            for i in range(3):
-                if game[j][i]==0:
-                    game[j][i]=1
-                    return game
-    else:
-        a=[sum(game[0]),sum(game[1]),sum(game[2])]
-        if -2 in a:
-            j=a.index(-2)
-            for i in range(3):
-                if game[j][i]==0:
-                    game[j][i]=1
-                    return game
-        elif 2 in a:
-            j=a.index(2)
-            for i in range(3):
-                if game[j][i]==0:
-                    game[j][i]=-1
-                    return game
-    # Checking columns
-    l=[0,0,0]
-    for row in game:
-        for i in range(3):
-                if row[i]!=0:
-                    l[i]+=row[i]
-    if turn:
-        if 2 in l:
-            for i in range(3):
-                if l[i] == 2 :
-                    for row in game:
-                        if row[i] == 0:
-                            row[i]=1
-                            return game
-        elif -2 in l:
-            for i in range(3):
-                if l[i]==-2:
-                    for row in game:
-                        if row[i] == 0:
-                            row[i]=1
-                            return game
-    else:
-        if -2 in l:
-            for i in range(3):
-                if l[i] == -2 :
-                    for row in game:
-                        if row[i] == 0:
-                            row[i]=-1
-                            return game
-        elif 2 in l:
-            for i in range(3):
-                if l[i]==2:
-                    for row in game:
-                        if row[i] == 0:
-                            row[i]=-1
-                            return game
-
-    if sum([sum(game[0]),sum(game[1]),sum(game[2])]) ==1:
-        if (game[0][1] == 1 and game[1][2] == 1) or (game[1][0] == 1 and game[2][1] == 1 ):
-            a=randint(0,1)
-            if a:game[0][0]=-1
-            else:game[2][2]=-1
-            return game
-        elif (game[0][1] == 1 and game[1][0] == 1) or (game[1][2] == 1 and game[2][1] == 1 ):
-            a=randint(0,1)
-            if a:game[2][0]=-1
-            else:game[0][2]=-1
-            return game
-    
-    if game[1][1]==-1:
-        if (game[0][0]==1 and game[2][2]==1) or (game[2][0]==1 and game[0][2]==1):
-            p=[[1,0],[1,2],[2,1],[0,1]]
-            a=randint(0,4)
-            i,j=p[a]
-            game[i][j]=-1
-            return game
-
-    if game[0][0]==0 or game[1][1]==0 or game[2][2]==0 or game[2][0]==0 or game[0][2]==0:
-        if sum([sum(game[0]),sum(game[1]),sum(game[2])]) != 0 and game[1][1] == 0:
-            if turn:game[1][1]=1
-            else:game[1][1]=-1
-        else:
-            p=[[0,0],[1,1],[2,2],[2,0],[0,2]]
-            while True:
-                a=randint(0,len(p)-1)
-                i,j=p[a]
-                if game[i][j]==0:
-                    if turn:
-                        game[i][j]=1
-                    else:
-                        game[i][j]=-1  
-                    break
-                else:
-                    p.pop(a)
-    else:
+    def check_win(self) -> bool:
+        game=self.game
+        win = False
+        if game[1][1] !=0:
+            if game[0][0]==game[1][1] and game[1][1]==game[2][2]:
+                win = True
+            elif game[0][2]==game[1][1] and game[1][1]==game[2][0]:
+                win = True
+            if win:
+                return win
+        l=[0,0,0]
         for row in game:
-            for i in row:
-                if row[i]==0:
-                    if turn : row[i]=1
-                    else: row[i]=-1
-    return game
+            if (1 not in row or -1 not in row) and 0 not in row:
+                win = True
+                return win
+            else:
+                for i in range(3):
+                    if row[i]!=0:
+                        l[i]+=row[i]
+        if -3 in l or 3 in l:
+            win = True
+        return win
 
-def two_player(game,turn,w_move,error,player,start = False):
-    if start:
-        print("Player 1 is 'X' and Player 2 is 'O'\nTo make a move enter row and column number")
-        print("First Input row then input column seperated with a column\n")
-    else:
-        os.system('cls')
-    print_board(game)
-    if w_move:
-        print("That place already taken, Choose anothe place\n")
-    if error:
-        print(" Wrong Input Enter Again")
-    if player:
-        if turn:
-            step = input("Player 1 =>")
-        else:
-            step = input("Player 2 =>")
-    else:
-        if turn:
-            step = input("Player's Turn =>")
-        else:
-            game = computer_game(game,turn)
-            if check_win(game):
-                os.system('cls')
-                print_board(game)
-                if turn:
-                    print("player 1 Won!")
-                    return 0
+    def check_tie(self) -> bool:
+        for row in self.game:
+            if 0 in row:
+                return False
+        return True
+
+    def check_pos(self,row,column) -> bool: # Checks if a perticular position is empty or not
+        return True if self.game[row][column]==0 else False
+    
+    def print_board(self) -> None:
+        print("    0   1   2\n")
+        for count, row in enumerate(self.game):
+            print(count,end="  ")
+            for i in range(len(row)):
+                if row[i]==1:
+                    print(f" X ",end="")
+                elif row[i]==-1:
+                    print(f" O ",end="")
                 else:
-                    print("CPU won!")
-                    return 0
-            else:
-                if not check_tie(game):
-                    two_player(game,not turn,0,False,player)
-                    return 0
+                    print(f"   ",end="")
+                if i!=2:
+                    print("|",end="")
                 else:
-                    os.system('cls')
-                    print_board(game)
-                    print("It's a Tie")
-                    return 0
-    if not(not player and not turn):
-        try:
-            row,column = map(int,step.split(" "))
-        except:
-            two_player(game,turn,0,True,player)
+                    print("")
+            if count!=2:
+                print("   -----------")
+        print("")
+    
+    def minimax(self,isMaximizing):
+        """
+            This Algorithm can be improved either by introducing depth
+            or by implemeting Alpha-Beta Pruning Algorithm which is
+            modification of Minimax Algorithm
+        """
+        # Terminating Conditions
+        if self.check_win():
+            return -1 if isMaximizing else 1
+        if self.check_tie():
             return 0
-        if row in [0,1,2] and column  in [0,1,2]:
-            if game[row][column] != 0 :
-                os.system('cls')
-                print_board(game)
-                two_player(game,turn,1,False,player)
-                return 0
-            else:
-                os.system('cls')
-                if turn:game[row][column]=1
-                else:game[row][column]=-1
-                if check_win(game):
-                    print_board(game)
-                    if turn:
-                        print("player 1 Won!")
-                        return 0
-                    else:
-                        print("Player 2 won!")
-                        return 0
-                else:
-                    if not check_tie(game):
-                        two_player(game,not turn,0,False,player)
-                        return 0
-                    else:
-                        print_board(game)
-                        print("It's a Tie")
-                        return 0
-        else:
-            two_player(game,turn,0,True,player)
-            return 0
+
+        # If the game continues
+        bestScore = float("-inf") if isMaximizing else float("inf")
+        for row in range(len(self.game)):
+            for col in range(len(self.game[row])):
+                if self.check_pos(row, col):
+                    self.game[row][col] = 1 if isMaximizing else -1
+                    score = self.minimax(isMaximizing=False if isMaximizing else True)
+                    self.game[row][col] = 0
+                    if isMaximizing: # this is human player
+                        bestScore=max(score,bestScore)
+                    else: # this is AI
+                        bestScore=min(score,bestScore)
+        return bestScore
+
+    def AI(self):
+        """
+            AI is always (O) or player 2.
+            The value of AI on game board is -1.
+        """
+        bestscore = float("inf")
+        bestmove = [0,0]
+        for row in range(len(self.game)):
+            for col in range(len(self.game[row])):
+                if self.check_pos(row, col):
+                    self.game[row][col] = -1
+                    score = self.minimax(isMaximizing=True)
+                    self.game[row][col] = 0
+                    if score<bestscore:
+                        bestscore=score
+                        bestmove=[row,col]
+        return bestmove
+        
 
 if __name__=="__main__":
-    game=[[ 0, 0, 0 ],
+    game= [[ 0, 0, 0 ],
             [ 0, 0, 0 ],
-            [ 0, 0, 0 ]]
+            [ 0, 0, 0 ]] 
+    start = tictaktoe(game)
     while True:
         player = int(input("Choose one of the following:\n1.P v P\n2.CPU vs P\n=> "))
         if player == 1:
-            two_player(game,True,0,False,True,True)
-            break
+            print("Player 1 is 'X' and Player 2 is 'O'\nTo make a move enter row and column number")
+            print("First Input row then input column seperated with a space\n")
+            loop=True
+            while loop: # Driver loop of pvp game
+                start.print_board()
+                try:
+                    if player: # Player 1 i.e. "X"
+                        row,column = map(int,input("Player 1 =>").strip().split(" "))
+                    else: # Player 2 i.e. "O"
+                        row,column = map(int,input("Player 2 =>").strip().split(" "))
+                except ValueError: #Value error
+                    print("Please insert correct values.")
+                    continue
+                string,loop,player=start.pvp(player,row,column)
+                os.system('cls')
+                print(string)
+            start.print_board()
         elif player == 2:
-            two_player(game,randint(0,1),0,False,False,True)
-            break
+            player=randint(0,1)
+            print("You are 'X' and Computer is 'O'\nTo make a move enter row and column number")
+            print("First Input row then input column seperated with a space\n")
+            loop=True
+            while loop: # Driver loop of pvp game
+                start.print_board()
+                if player: # Player 1 i.e. "X"
+                    try:
+                        row,column = map(int,input("Your Turn =>").strip().split(" "))
+                    except ValueError: #Value error
+                        print("Please insert correct values.")
+                        continue
+                    string,loop,player=start.pvp(player,row,column)
+                    os.system('cls')
+                    print(string)
+                else: # Player 2 i.e. "O"
+                    row,column = start.AI()
+                    string,loop,player=start.pvp(player,row,column)
+                    os.system('cls')
+                    print(string)
+            start.print_board()
         else:
             print("Wrong input! Enter Again")
+        break
