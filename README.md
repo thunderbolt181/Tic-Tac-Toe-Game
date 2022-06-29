@@ -20,4 +20,5 @@
     - Using Alpha-Beta Pruning for decreasing overall time.
 
 **For working Example You can refer to {if __name__=="__main__":} block in the code.**
+
 **Player 1 is 'X' and Player 2 is 'O'. And is case of AI, AI is always "O"**
