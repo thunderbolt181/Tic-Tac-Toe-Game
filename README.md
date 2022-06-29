@@ -4,7 +4,7 @@
 - PvP
 
 **This code is like an api. You can use specific functions for specific things**
-- pvp(row, column) => it make a move by taking 'row' and 'column' as parameters.
+- pvp(player, row, column) => it make a move by taking 'player', 'row' and 'column' as parameters.
 - AI() => it returns 'row' and 'column' number at which AI wants to make its move.
 - check_win() => Checks if game has been finished by a win or not.
 - check_tie() => Checks if game has been finished by a tie.
