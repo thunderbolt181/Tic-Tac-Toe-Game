@@ -74,16 +74,16 @@ class tictaktoe:
                 print("   -----------")
         print("")
     
-    def minimax(self,isMaximizing):
+    def minimax(self,isMaximizing,depth=0):
         """
-            This Algorithm can be improved either by introducing depth
-            or by implemeting Alpha-Beta Pruning Algorithm which is
-            modification of Minimax Algorithm
+            This Algorithm can be improved either by 
+            implemeting Alpha-Beta Pruning Algorithm 
+            which is modification of Minimax Algorithm
         """
         # Terminating Conditions
         if self.check_win():
             return -1 if isMaximizing else 1
-        if self.check_tie():
+        if self.check_tie() or depth==5:
             return 0
 
         # If the game continues
@@ -92,7 +92,7 @@ class tictaktoe:
             for col in range(len(self.game[row])):
                 if self.check_pos(row, col):
                     self.game[row][col] = 1 if isMaximizing else -1
-                    score = self.minimax(isMaximizing=False if isMaximizing else True)
+                    score = self.minimax(isMaximizing=False if isMaximizing else True,depth=depth+1)
                     self.game[row][col] = 0
                     if isMaximizing: # this is human player
                         bestScore=max(score,bestScore)
