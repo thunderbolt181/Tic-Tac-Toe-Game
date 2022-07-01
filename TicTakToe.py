@@ -1,11 +1,13 @@
 import os
 from random import randint
 
+CLEAR = "clear" if os.name == "posix" else "cls"
+
 class tictaktoe:
     def __init__(self,game):
         self.game = game
 
-    def pvp(self,player,row,column):
+    def pvp(self,player,row,column): # makes the moves and decides the next step.
         if player: # Player 1 i.e. "X"
             if self.check_pos(row, column):
                 self.game[row][column]=1
@@ -23,7 +25,7 @@ class tictaktoe:
             else: output=["'O' Won!",False,player]
         return output
 
-    def check_win(self) -> bool:
+    def check_win(self) -> bool: # Check if someone won or not
         game=self.game
         win = False
         if game[1][1] !=0:
@@ -46,7 +48,7 @@ class tictaktoe:
             win = True
         return win
 
-    def check_tie(self) -> bool:
+    def check_tie(self) -> bool: # Checks if game is tied or not
         for row in self.game:
             if 0 in row:
                 return False
@@ -74,16 +76,15 @@ class tictaktoe:
                 print("   -----------")
         print("")
     
-    def minimax(self,isMaximizing,depth=0):
+    def minimax(self,alpha,beta,isMaximizing,depth=0):
         """
-            This Algorithm can be improved either by 
-            implemeting Alpha-Beta Pruning Algorithm 
-            which is modification of Minimax Algorithm
+            This Algorithm is using Minimax Algorithm with
+            Alpha-Beta Pruning.
         """
         # Terminating Conditions
         if self.check_win():
             return -1 if isMaximizing else 1
-        if self.check_tie() or depth==5:
+        if self.check_tie() or depth ==5:
             return 0
 
         # If the game continues
@@ -92,12 +93,16 @@ class tictaktoe:
             for col in range(len(self.game[row])):
                 if self.check_pos(row, col):
                     self.game[row][col] = 1 if isMaximizing else -1
-                    score = self.minimax(isMaximizing=False if isMaximizing else True,depth=depth+1)
+                    score = self.minimax(alpha,beta,isMaximizing=False if isMaximizing else True,depth=depth+1)
                     self.game[row][col] = 0
                     if isMaximizing: # this is human player
                         bestScore=max(score,bestScore)
+                        alpha = max(alpha,bestScore)
                     else: # this is AI
                         bestScore=min(score,bestScore)
+                        beta = max(beta,bestScore)
+            if beta<=alpha:
+                break
         return bestScore
 
     def AI(self):
@@ -111,7 +116,7 @@ class tictaktoe:
             for col in range(len(self.game[row])):
                 if self.check_pos(row, col):
                     self.game[row][col] = -1
-                    score = self.minimax(isMaximizing=True)
+                    score = self.minimax(float("-inf"),float("inf"),isMaximizing=True)
                     self.game[row][col] = 0
                     if score<bestscore:
                         bestscore=score
@@ -141,12 +146,12 @@ if __name__=="__main__":
                     print("Please insert correct values.")
                     continue
                 string,loop,player=start.pvp(player,row,column)
-                os.system('cls')
+                os.system(CLEAR)
                 print(string)
             start.print_board()
         elif player == 2:
-            player=randint(0,1)
-            print("You are 'X' and Computer is 'O'\nTo make a move enter row and column number")
+            player=randint(0,1) # randomize the player to randomize which player will move first
+            print("You are 'X' and AI is 'O'\nTo make a move enter row and column number")
             print("First Input row then input column seperated with a space\n")
             loop=True
             while loop: # Driver loop of pvp game
@@ -158,12 +163,12 @@ if __name__=="__main__":
                         print("Please insert correct values.")
                         continue
                     string,loop,player=start.pvp(player,row,column)
-                    os.system('cls')
+                    os.system(CLEAR)
                     print(string)
                 else: # Player 2 i.e. "O"
                     row,column = start.AI()
                     string,loop,player=start.pvp(player,row,column)
-                    os.system('cls')
+                    os.system(CLEAR)
                     print(string)
             start.print_board()
         else:
