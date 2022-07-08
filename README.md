@@ -3,6 +3,9 @@
 - AI vs P
 - PvP
 
+## Preview
+![preview](assets/Tic_Tac_Toe.gif)
+
 ## AI
 - It uses Minimax Algorithm with Alpha-Beta Pruning to predict its move.
 - It returns the most favourable position according to the board
