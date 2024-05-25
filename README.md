@@ -17,6 +17,12 @@ $ git clone https://github.com/thunderbolt181/Tic-Tac-Toe-Game.git
 $ cd Tic-Tac-Toe-Game
 $ python TicTakToe.py
 ```
+```
+You can also use docker as i have already configured dockerfile.
+$ docker build -t <image_name> <location>
+=> now nevigate to the <location>
+$ docker run -t -i <image_name>
+```
 
 **This code is like an api. You can use specific functions for specific things**<br/>
 **Make sure to set `self.game` attribute to your board before using any of these functions**
