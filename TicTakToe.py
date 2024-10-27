@@ -6,6 +6,8 @@ CLEAR = "clear" if os.name == "posix" else "cls"
 class tictaktoe:
     def __init__(self,game):
         self.game = game
+        self.until_death = False
+        self.prev_moves = []
 
     def pvp(self,player,row,column): # makes the moves and decides the next step.
         if player: # Player 1 i.e. "X"
@@ -122,7 +124,12 @@ class tictaktoe:
                         bestscore=score
                         bestmove=[row,col]
         return bestmove
-        
+    
+    def until_death_mode(self):
+        if self.until_death and len(self.prev_moves)>5:
+            row, column = self.prev_moves[0]
+            self.game[row][column] = 0
+            self.prev_moves = self.prev_moves[1:]
 
 if __name__=="__main__":
     game= [[ 0, 0, 0 ],
@@ -136,6 +143,7 @@ if __name__=="__main__":
             print("First Input row then input column seperated with a space\n")
             loop=True
             while loop: # Driver loop of pvp game
+                print("Previous Moves:", start.prev_moves)
                 start.print_board()
                 try:
                     if player: # Player 1 i.e. "X"
@@ -146,6 +154,9 @@ if __name__=="__main__":
                     print("Please insert correct values.")
                     continue
                 string,loop,player=start.pvp(player,row,column)
+                if loop:
+                    start.prev_moves.append([row,column])
+                    start.until_death_mode()
                 os.system(CLEAR)
                 print(string)
             start.print_board()
@@ -155,6 +166,7 @@ if __name__=="__main__":
             print("First Input row then input column seperated with a space\n")
             loop=True
             while loop: # Driver loop of pvp game
+                print("Previous Moves:", start.prev_moves)
                 start.print_board()
                 if player: # Player 1 i.e. "X"
                     try:
@@ -162,14 +174,14 @@ if __name__=="__main__":
                     except ValueError: #Value error
                         print("Please insert correct values.")
                         continue
-                    string,loop,player=start.pvp(player,row,column)
-                    os.system(CLEAR)
-                    print(string)
                 else: # Player 2 i.e. "O"
                     row,column = start.AI()
-                    string,loop,player=start.pvp(player,row,column)
-                    os.system(CLEAR)
-                    print(string)
+                string,loop,player=start.pvp(player,row,column)
+                os.system(CLEAR)
+                print(string,loop)
+                if loop:
+                    start.prev_moves.append([row,column])
+                    start.until_death_mode()
             start.print_board()
         else:
             print("Wrong input! Enter Again")
